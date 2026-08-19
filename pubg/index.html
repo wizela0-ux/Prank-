@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PUBG Mobile Free UC Offer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #121212;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .card {
+      background: #1e1e1e;
+      border: 2px solid #f39c12;
+      padding: 30px 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(243, 156, 18, 0.3);
+      text-align: center;
+      max-width: 360px;
+      width: 90%;
+      position: relative;
+    }
+
+    .pubg-icon {
+      font-size: 50px;
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      color: #f1c40f;
+      font-size: 22px;
+      margin-bottom: 25px;
+      line-height: 1.4;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      position: relative;
+      min-height: 50px;
+    }
+
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #yesBtn {
+      background: #f39c12;
+      color: #000;
+      box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
+    }
+
+    #yesBtn:hover {
+      transform: scale(1.05);
+    }
+
+    #noBtn {
+      background: #444;
+      color: #fff;
+      position: absolute;
+      right: 10px;
+      transition: all 0.15s ease-out;
+    }
+
+    .result-img {
+      width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 2px solid #f39c12;
+      margin-top: 15px;
+      animation: popIn 0.4s ease;
+    }
+
+    .caption {
+      margin-top: 15px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #f1c40f;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card" id="card">
+    <div class="pubg-icon">🎮</div>
+    <h1>የ PUBG Mobile Free UC ትፈልጋለህ/ሽ?</h1>
+    <div class="btn-group">
+      <button id="yesBtn">አዎ! እፈልጋለሁ</button>
+      <button id="noBtn">አይ አልፈልግም</button>
+    </div>
+  </div>
+
+  <script>
+    // -------------------------------------------------------------------
+    // 👉 የፎቶሽን/ህን Online Link ከታች ባለው " " ውስጥ አስገባ/ቢ
+    const imageUrl = "https://www.imghippo.com/i/ZLQ9949Sc.jpg";
+    // -------------------------------------------------------------------
+
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const card = document.getElementById('card');
+
+    function moveButton() {
+      const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+      const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+
+      const randomX = Math.max(10, Math.floor(Math.random() * maxX));
+      const randomY = Math.max(10, Math.floor(Math.random() * maxY));
+
+      noBtn.style.position = 'fixed';
+      noBtn.style.left = `${randomX}px`;
+      noBtn.style.top = `${randomY}px`;
+    }
+
+    noBtn.addEventListener('mouseover', moveButton);
+    noBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      moveButton();
+    });
+
+    yesBtn.addEventListener('click', () => {
+      card.innerHTML = `
+        <div style="font-size: 40px;">😜</div>
+        <img src="${imageUrl}" alt="UC Photo" class="result-img">
+        <div class="caption">ይሄ ነው ዩሲ! 😂</div>
+      `;
+    });
+  </script>
+
+</body>
+</html>
