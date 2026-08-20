@@ -52,7 +52,7 @@
     .btn-group {
       display: flex;
       justify-content: center;
-      gap: 20px;
+      /* gap: 20px;  ተመሳሳይ መጠን እንዲኖራቸው ክፍተቱን አጥፍቼአለሁ */
       position: relative;
       min-height: 50px;
     }
@@ -64,17 +64,19 @@
       border: none;
       border-radius: 25px;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: transform 0.2s, background-color 0.2s;
     }
 
     #yesBtn {
       background-color: #ff4b2b;
       color: white;
       box-shadow: 0 4px 15px rgba(255, 75, 43, 0.4);
+      width: 140px; /* ተመሳሳይ መጠን እንዲኖራቸው ስፋቱን ወስኛለሁ */
     }
 
     #yesBtn:hover {
       transform: scale(1.1);
+      background-color: #e63d21;
     }
 
     #noBtn {
@@ -83,6 +85,7 @@
       position: absolute;
       right: 20px;
       transition: all 0.15s ease-out;
+      width: 140px; /* ተመሳሳይ መጠን እንዲኖራቸው ስፋቱን ወስኛለሁ */
     }
   </style>
 </head>
@@ -105,12 +108,14 @@
     // "No" በተኑን የሚያሸሸው ተግባር
     function moveButton() {
       // የስክሪኑን ስፋትና ቁመት ወሰን ማወቅ
-      const maxX = window.innerWidth - noBtn.offsetWidth - 20;
-      const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+      // በተኑ ስክሪኑ ዳር ላይ እንዳይደርስ 30px padding ጨምሬአለሁ
+      const maxX = window.innerWidth - noBtn.offsetWidth - 30;
+      const maxY = window.innerHeight - noBtn.offsetHeight - 30;
 
       // በዘፈቀደ (Random) ቦታ ማውጣት
-      const randomX = Math.max(10, Math.floor(Math.random() * maxX));
-      const randomY = Math.max(10, Math.floor(Math.random() * maxY));
+      // በተኑ በዘፈቀደ ቦታ ሲንቀሳቀስ መጠኑ እንዳይጨምር ለማድረግ maxX እና maxY ስሌት አሻሽዬአለሁ
+      const randomX = Math.max(10, Math.floor(Math.random() * maxX) + 15);
+      const randomY = Math.max(10, Math.floor(Math.random() * maxY) + 15);
 
       noBtn.style.position = 'fixed';
       noBtn.style.left = `${randomX}px`;
@@ -130,7 +135,7 @@
     yesBtn.addEventListener('click', () => {
       card.innerHTML = `
         <div class="emoji">😂</div>
-        <h1 style="color: #ff4b2b;">አይ አንተ ቦት ኣቃለዉ  እኮ</h1>
+        <h1 style="color: #ff4b2b;">አይ አንተ ቦት ኣቃለዉ እኮ</h1>
         <p style="color: #555; font-size: 16px;">በቃ አይዞህ ኣንድ ቀን ትለምዳለህ</p>
       `;
     });
