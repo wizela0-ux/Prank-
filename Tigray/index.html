@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PUBG Squad Recall Memorial</title>
+  <style>
+    :root {
+      --bg-dark: #07090e;
+      --pubg-gold: #ffb400;
+      --recall-green: #00ff88;
+      --pubg-red: #ff2a4b;
+      --card-bg: rgba(15, 22, 32, 0.96);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 15px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Background Flare Canvas */
+    #flareCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Header Section */
+    .header {
+      text-align: center;
+      margin-top: 10px;
+      max-width: 480px;
+      z-index: 10;
+    }
+
+    .header h2 {
+      color: var(--pubg-gold);
+      font-size: 22px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
+      text-shadow: 0 0 15px rgba(255, 180, 0, 0.4);
+    }
+
+    /* Highlighted Subtitle Box */
+    .highlight-sub {
+      background: linear-gradient(135deg, rgba(255, 51, 68, 0.2), rgba(0, 255, 136, 0.15));
+      border: 1px solid rgba(255, 180, 0, 0.6);
+      padding: 12px 16px;
+      border-radius: 14px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(255, 180, 0, 0.15);
+    }
+
+    .highlight-sub p {
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.6;
+      background: linear-gradient(90deg, #ffffff, #ffb400, #00ff88);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+    }
+
+    /* Center Recall Card */
+    .center-card {
+      background: linear-gradient(180deg, rgba(20, 27, 38, 0.9) 0%, rgba(8, 11, 16, 0.95) 100%);
+      border: 1px solid rgba(0, 255, 136, 0.35);
+      border-radius: 28px;
+      padding: 35px 25px;
+      text-align: center;
+      max-width: 350px;
+      width: 100%;
+      box-shadow: 0 0 35px rgba(0, 255, 136, 0.15);
+      position: relative;
+      margin: auto 0;
+      z-index: 10;
+    }
+
+    .recall-icon-wrap {
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 20px;
+      background: radial-gradient(circle, rgba(255, 42, 75, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .recall-heart {
+      font-size: 55px;
+      filter: drop-shadow(0 0 14px var(--pubg-red));
+      animation: heartPulse 1.4s infinite ease-in-out;
+    }
+
+    @keyframes heartPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.18); filter: drop-shadow(0 0 25px var(--pubg-red)); }
+      100% { transform: scale(1); }
+    }
+
+    .recall-title {
+      font-size: 22px;
+      font-weight: 900;
+      background: linear-gradient(90deg, #ff2a4b, #ffb400, #00ff88);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1.5px;
+      margin-bottom: 25px;
+    }
+
+    .recall-btn {
+      background: linear-gradient(45deg, #00c853, #00ff88);
+      color: #05080c;
+      border: none;
+      padding: 16px 30px;
+      font-size: 18px;
+      font-weight: 900;
+      border-radius: 30px;
+      cursor: pointer;
+      width: 100%;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      animation: btnGlow 1.8s infinite alternate ease-in-out;
+      transition: transform 0.15s;
+    }
+
+    .recall-btn:active {
+      transform: scale(0.95);
+    }
+
+    @keyframes btnGlow {
+      0% { box-shadow: 0 0 12px rgba(0, 255, 136, 0.4); transform: scale(1); }
+      100% { box-shadow: 0 0 30px rgba(0, 255, 136, 0.9), 0 0 45px rgba(255, 42, 75, 0.6); transform: scale(1.03); }
+    }
+
+    /* Recall Progress Ring Overlay */
+    .ring-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(5, 7, 10, 0.85);
+      backdrop-filter: blur(6px);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .ring-svg {
+      width: 140px;
+      height: 140px;
+      transform: rotate(-90deg);
+    }
+
+    .ring-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.1);
+      stroke-width: 8;
+    }
+
+    .ring-fill {
+      fill: none;
+      stroke: url(#ringGrad);
+      stroke-width: 8;
+      stroke-dasharray: 314;
+      stroke-dashoffset: 314;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.05s linear;
+    }
+
+    .ring-text {
+      margin-top: 25px;
+      color: var(--recall-green);
+      font-size: 16px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-shadow: 0 0 12px var(--recall-green);
+    }
+
+    /* Bouncing Floating Message Card */
+    .floating-card {
+      position: fixed;
+      width: 320px;
+      background: var(--card-bg);
+      border: 2px solid var(--pubg-gold);
+      border-radius: 20px;
+      padding: 22px;
+      text-align: center;
+      box-shadow: 0 0 35px rgba(255, 180, 0, 0.35);
+      z-index: 90;
+      display: none;
+      cursor: pointer;
+    }
+
+    .floating-card h3 {
+      color: var(--pubg-gold);
+      font-size: 17px;
+      margin-bottom: 12px;
+    }
+
+.floating-card p {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 900;
+  margin-bottom: 15px;
+
+  /* የሚንቀሳቀስ የቀይ፣ የሰማያዊ እና የወርቃማ ከለር ውህደት */
+  background: linear-gradient(90deg, #ff2a4b, #00d2ff, #ffb400, #ff2a4b);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  /* ከለሩ እንዲንቀሳቀስ የሚያደርገው አኒሜሽን */
+  animation: textColorShift 3s linear infinite;
+
+  /* ደመቅ ብሎ እንዲያበራ የሚያደርገው የኒዮን ጥላ (Glow) */
+  filter: drop-shadow(0 0 10px rgba(0, 210, 255, 0.7));
+}
+
+/* የቀለሞች እንቅስቃሴ አኒሜሽን */
+@keyframes textColorShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+    }
+
+    .tap-hint {
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    .footer-text {
+      font-size: 11px;
+      color: #4b5563;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="flareCanvas"></canvas>
+
+  <div class="header">
+    <h2>የ Squad መታሰቢያ</h2>
+    <div class="highlight-sub">
+      <p>ከኢትዮጵያ PUBG ተጫዋቾች በትግራይ ለሚገኙ ወንድሞቻችን እና የ squad አባሎቻችን የተዘጋጀ መታሰቢያ!</p>
+    </div>
+  </div>
+
+  <div class="center-card">
+    <div class="recall-icon-wrap">
+      <div class="recall-heart">❤️</div>
+    </div>
+    <div class="recall-title">PLEASE RECALL ME</div>
+    <button class="recall-btn" id="recallBtn">RECALL NOW</button>
+  </div>
+
+  <div class="footer-text">PUBG Mobile Community Memorial</div>
+
+  <!-- Recall Ring Progress Overlay -->
+  <div class="ring-overlay" id="ringOverlay">
+    <svg class="ring-svg">
+      <defs>
+        <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#00ff88" />
+          <stop offset="100%" stop-color="#ffb400" />
+        </linearGradient>
+      </defs>
+      <circle class="ring-bg" cx="70" cy="70" r="50"></circle>
+      <circle class="ring-fill" id="ringFill" cx="70" cy="70" r="50"></circle>
+    </svg>
+    <div class="ring-text">I'm recalling my teammate...</div>
+  </div>
+
+  <!-- Floating Bouncing Card -->
+  <div class="floating-card" id="floatingCard">
+    <h3>💚 ብችራዘሮች 💚</h3>
+    <p id="quoteText">...</p>
+  </div>
+
+  <script>
+    const quotes = [
+      "“ዞኑ ቢርቅም፣ ኔትወርኩ ቢቋረጥም የስኳድ ፍቅር አይርቅም። በጌም ብቻ ሳይሆን በህይወትም አብረን ነን፤ አይዞን!”",
+      "“አንድ ቀን እንደ ድሮው አብረን Map መርጠን፣ ስኳድ ሞልተን የምንጫወትበት ቀን ቅርብ ነው። ፅናቱን ይስጣችሁ!”",
+      "“እያንዳንዱ የPUBG ተጫዋች ልቡ ከእናንተ ጋር ነው። ወንድሞቻችን በፍጹም አትረሱም!”"
+    ];
+
+    const recallBtn = document.getElementById('recallBtn');
+    const ringOverlay = document.getElementById('ringOverlay');
+    const ringFill = document.getElementById('ringFill');
+    const floatingCard = document.getElementById('floatingCard');
+    const quoteText = document.getElementById('quoteText');
+
+    // Canvas setup for continuous flare rain
+    const canvas = document.getElementById('flareCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let flareActive = false;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class FlareParticle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = -20;
+        this.size = Math.random() * 5 + 3.5; // የወፈሩ ፍሌሮች
+        this.speedY = Math.random() * 1.8 + 1.2; // ስሎው ሞሽን ዝናብ
+        this.speedX = Math.random() * 0.8 - 0.4;
+        this.opacity = Math.random() * 0.85 + 0.15;
+        const colors = ['#ff2a4b', '#ff6b00', '#ffb400', '#ff0055'];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+      }
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        if (this.y > canvas.height) this.reset();
+      }
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.opacity;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = this.color;
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    for (let i = 0; i < 85; i++) particles.push(new FlareParticle());
+
+    function animateFlareRain() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (flareActive) {
+        particles.forEach(p => { p.update(); p.draw(); });
+      }
+      requestAnimationFrame(animateFlareRain);
+    }
+    animateFlareRain();
+
+    // Floating Card Physics (Bounce & Slide)
+    let posX = 0, posY = 0;
+    let velX = 0, velY = 0;
+    let cardActive = false;
+    let cardWidth = 320, cardHeight = 180;
+
+    function startFloatingCard() {
+      const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+      quoteText.textContent = randomQuote;
+
+      cardWidth = floatingCard.offsetWidth || 320;
+      cardHeight = floatingCard.offsetHeight || 180;
+
+      // Enter randomly from top opening or bottom opening only
+      const fromTop = Math.random() > 0.5;
+      posX = Math.random() * (window.innerWidth - cardWidth - 40) + 20;
+      posY = fromTop ? -cardHeight - 10 : window.innerHeight + 10;
+
+      // በፍጥነት እንዲንቀሳቀስ ከተፈለገ፦
+velX = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 0.8 + 0.6); 
+velY = fromTop ? (Math.random() * 0.7 + 0.7) : -(Math.random() * 0.7 + 0.7);
+
+
+      floatingCard.style.display = 'block';
+      cardActive = true;
+      updateCardPosition();
+    }
+
+    function updateCardPosition() {
+      if (!cardActive) return;
+
+      posX += velX;
+      posY += velY;
+
+      // Bounce off Left and Right walls
+      if (posX <= 10) {
+        posX = 10;
+        velX = -velX;
+      } else if (posX + cardWidth >= window.innerWidth - 10) {
+        posX = window.innerWidth - cardWidth - 10;
+        velX = -velX;
+      }
+
+      floatingCard.style.left = `${posX}px`;
+      floatingCard.style.top = `${posY}px`;
+
+      requestAnimationFrame(updateCardPosition);
+    }
+
+    function dismissCard() {
+      cardActive = false;
+      floatingCard.style.display = 'none';
+    }
+
+    // PUBG Recall Ring Filling Logic
+    let ringProgress = 0;
+    let ringInterval;
+    const circumference = 314; // 2 * PI * 50
+
+    recallBtn.addEventListener('click', () => {
+      dismissCard();
+      ringOverlay.style.display = 'flex';
+      ringProgress = 0;
+      ringFill.style.strokeDashoffset = circumference;
+
+      // Fill 0% to 100% in 2.2 seconds clockwise
+      const startTime = performance.now();
+      const duration = 2200;
+
+      function fillRing(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const offset = circumference - (progress * circumference);
+        ringFill.style.strokeDashoffset = offset;
+
+        if (progress < 1) {
+          requestAnimationFrame(fillRing);
+        } else {
+          setTimeout(() => {
+            ringOverlay.style.display = 'none';
+            flareActive = true; // Continuous flare rain starts and never stops
+            startFloatingCard();
+          }, 200);
+        }
+      }
+
+      requestAnimationFrame(fillRing);
+    });
+
+    // Tap anywhere on screen to dismiss card
+    window.addEventListener('click', (e) => {
+      if (cardActive && !ringOverlay.contains(e.target) && e.target !== recallBtn) {
+        dismissCard();
+      }
+    });
+  </script>
+
+</body>
+</html>
